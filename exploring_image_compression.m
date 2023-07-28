@@ -1,0 +1,51 @@
+% % Factors Impacting File Size
+% % Several factors impact file size:
+% % image resolution: more pixels mean more numbers to store. But higher resolution doesn't always mean higher file size as you will soon see
+% % image content: images with lots of variations in color and intensity cannot be compressed as much as images with little variation
+% % compression algorithm:  lossless compression will require more memory than lossy compression
+% % compression settings:  for JPG, you can specify the "Quality" factor. Higher quality factors will reproduce the images more closely
+% 
+% Load Images for Investigation
+orion = imread("OrionNebula1.png");
+moon = imread("half moon.JPG");
+% Display the memory required to store the data in MATLAB. How does the ratio of memory in MATLAB compare to the memory on disk? (Note that the whos command shows the memory Bytes. 1 MB = 10^6 Bytes)
+
+whos orion
+whos moon
+% Comparing File Types
+% The Orion image is a PNG file while the moon image is a JPG. Remember that PNG files use lossless compression while JPG files use lossy compression. To test if the compression algorithm is the most important factor for these two images, save them as the other file type and compare the new size.
+% If the moon image memory on disk increases to near 29 MB and the Orion image memory on disk decreases to near 3 MB, then the compression algorithm accounts for most of the difference in file size.
+imwrite(orion,"orion jpg version.jpg","Quality",100)
+imwrite(moon, "half moon PNG version.png");
+orionJPGinfo = imfinfo("Orion JPG version.jpg");
+orionJPGmemory = orionJPGinfo.FileSize
+moonPNGinfo = imfinfo("half moon PNG version.png");
+moonPNGmemory = moonPNGinfo.FileSize
+moonPNGmemory/orionJPGmemory
+imtool(orion)
+imtool(moon)
+
+
+moonPNG = imread("half moon PNG version.png");
+orionjpg=imread("Orion JPG version.jpg");
+
+%The isequal function compares to variables and returns true (logical 1) if the variables are equal. 
+isequal(moonPNG, moon) % ans is 1 because originally picture was in jpg already lossy  information after converting in png it has same information of jpg
+isequal(orion,orionjpg) %ans is 0 beacuse picture was in png has more detail information after converting in jpg it loe information so variables are not equal
+
+imwrite(moon, "new half moon JPG.jpg", "Quality", 100);
+moonJPG2 = imread("new half moon JPG.jpg");
+isequal(moon, moonJPG2)
+
+newMoonJPG = imread("new half moon JPG.jpg");
+moonDiff = im2double(moon) - im2double(newMoonJPG);
+imshow(moonDiff)
+
+
+imshow(moonDiff(:,:,1), [])
+colorbar
+imshow(moonDiff(:,:,2), [])
+colorbar
+imshow(moonDiff(:,:,3), [])
+colorbar
+
